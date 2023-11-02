@@ -138,6 +138,10 @@ bool isBoolFormula(ifstream& in) {
 	return true;
 }
 
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+
 struct elem {
 	int a;
 	elem* next;
@@ -333,7 +337,65 @@ node* deletenode(node* top, int x) {
 	return top;
 }
 
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+template<class T>
+void merge(T* arr, int left, int mid, int right) {
+	int i, j, k;
+	int n1 = mid - left + 1;
+	int n2 = right - mid;
+
+	T* Left = new T[n1], * Right = new T[n2];
+	for (i = 0; i < n1; i++) {
+		Left[i] = arr[left + i];
+	}
+	for (i = 0; i < n2; i++) {
+		Right[i] = arr[mid + 1 + i];
+	}
+
+	i = 0;
+	j = 0;
+	k = left;
+	while (i < n1 && j < n2) {
+		if (Left[i] <= Right[j]) {
+			arr[k] = Left[i];
+			i++;
+		}
+		else {
+			arr[k] = Right[j];
+			j++;
+		}
+		k++;
+	}
+
+	while (i < n1) {
+		arr[k] = Left[i];
+		i++;
+		k++;
+	}
+	while (j < n2) {
+		arr[k] = Right[j];
+		j++;
+		k++;
+	}
+}
+
+template<class T>
+void merge_sort(T* arr, int n) {
+	int current;
+	int left;
+
+	for (current = 1; current <= n - 1; current *= 2) {
+		for (left = 0; left < n - 1; left += 2 * current) {
+			int m = left + current - 1 < n - 1 ? left + current - 1 : n - 1;
+			int right = left + 2 * current - 1 ? left + 2 * current - 1 : n - 1;
+			merge<T>(arr, left, m, right);
+		}
+	}
+}
+
 int main() {
-	ifstream in("file.txt");
-	cout << boolFormula(in);
+
 }
