@@ -54,9 +54,9 @@ int countmax(int* arr, int len) {
 void binarySequences(int n, int* arr, int i) {
 	if (i == n) {
 		for (int i = 0; i < n; i++) {
-			//cout << arr[i];
+			cout << arr[i];
 		}
-		//cout << endl;
+		cout << endl;
 		return;
 	}
 	arr[i] = 0;
@@ -72,6 +72,29 @@ int sumPos(ifstream& in) {
 	else return sumPos(in);
 }
 
+int formula(ifstream& in) {
+	char c;
+	in >> c;
+	if (c >= '0' && c <= '9') {
+		return c - '0';
+	}
+	if (c == '(') {
+		int a = formula(in);
+		char operation; cin >> operation;
+		int b = formula(in);
+		switch (operation) {
+		case '+':
+			return a + b;
+		case '-':
+			return a - b;
+		case '*':
+			return a * b;
+		case '/':
+			return a / b;
+		}
+	}
+}
+
 bool check(ifstream& in) {
 	char c;
 	in.get(c);
@@ -81,6 +104,35 @@ bool check(ifstream& in) {
 	in.get(c);
 	if (c != '+' && c != '-' && c != '*' && c != '/') return false;
 	if (!check(in)) return false;
+	in.get(c);
+	if (c != ')') return false;
+	return true;
+}
+
+bool boolFormula(ifstream& in) {
+	char c;
+	in.get(c);
+	if (c == 'n') return !boolFormula(in);
+	if (c == 't') return true;
+	if (c == 'f') return false;
+	if (c == '(') {
+		bool a = boolFormula(in);
+		char op = in.get();
+		bool b = boolFormula(in);
+		if (op == 'a') return a && b;
+		if (op == 'o') return a || b;
+	}
+}
+
+bool isBoolFormula(ifstream& in) {
+	char c; in.get(c);
+	if (c == 'n') if (isBoolFormula(in)) return true; else return false;
+	if (c == 't' || c == 'f') return true;
+	if (c != '(') return false;
+	if (!isBoolFormula(in)) return false;
+	in.get(c);
+	if (!(c == 'a' || c == 'o')) return false;
+	if (!isBoolFormula(in)) return false;
 	in.get(c);
 	if (c != ')') return false;
 	return true;
@@ -267,7 +319,7 @@ bool search(node* top, int x) {
 }
 
 node* deletenode(node* top, int x) {
-	if (!top) return;
+	if (!top) return nullptr;
 	if (top->a == x) {
 		if (top->right) {
 			node* res = new node{ top->left, top->right->right, top->right->a };
@@ -282,5 +334,6 @@ node* deletenode(node* top, int x) {
 }
 
 int main() {
-
+	ifstream in("file.txt");
+	cout << boolFormula(in);
 }
