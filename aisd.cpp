@@ -42,13 +42,16 @@ int mymin(int* arr, int len) {
 	return _min;
 }
 
-int countmax(int* arr, int len) {
-	int _max = arr[0];
-	int counter = 1;
-	if (len > 1) {
-		int t = countmax(arr + 1, len - 1);
+int countMax(int* arr, int size, int maxElement, int count) {
+	if (size == 0)
+		return count;
+	if (arr[0] == maxElement)
+		count++;
+	else if (arr[0] > maxElement) {
+		count = 1;
+		maxElement = arr[0];
 	}
-	return counter + 1;
+	return countMax(arr + 1, size - 1, maxElement, count);
 }
 
 void binarySequences(int n, int* arr, int i) {
@@ -80,7 +83,7 @@ int formula(ifstream& in) {
 	}
 	if (c == '(') {
 		int a = formula(in);
-		char operation; cin >> operation;
+		char operation; in >> operation;
 		int b = formula(in);
 		switch (operation) {
 		case '+':
@@ -168,11 +171,12 @@ int countx(elem* top, int x) {
 }
 
 elem* removex(elem*& top, int x) {
-	if (top == nullptr) return nullptr;
+	if (top->next == nullptr) return nullptr;
 	if (top->a == x) {
 		elem* t = top->next;
 		delete top;
-		return t;
+		top = t;
+		return top;
 	}
 	else {
 		top->next = removex(top->next, x);
@@ -180,14 +184,14 @@ elem* removex(elem*& top, int x) {
 	}
 }
 
-//void printList(elem* top) {
-//	while (top != nullptr) {
-//		cout << top->a << ' ';
-//		top = top->next;
-//	}
-//	cout << endl;
-//	return;
-//}
+void printList(elem* top) {
+	while (top != nullptr) {
+		cout << top->a << ' ';
+		top = top->next;
+	}
+	cout << endl;
+	return;
+}
 
 void addyafterx(elem* top, int x, int y) {
 	if (top == nullptr) return;
@@ -221,7 +225,7 @@ int maxList(elem* q) {
 
 void reverseprint(elem* l) {
 	if (l->next) reverseprint(l->next);
-	std::cout << l->a;
+	std::cout << l->a << ' ';
 }
 
 void delList(elem* l) {
@@ -258,13 +262,11 @@ int countx(node* top, int x) {
 	if (!top) {
 		return 0;
 	}
-	if (top->a = x) {
-		return 1 + countx(top->left, x);
-		return 1 + countx(top->right, x);
+	if (top->a == x) {
+		return 1 + countx(top->right, x) + countx(top->left, x);
 	}
 	else {
-		return 0 + countx(top->left, x);
-		return 0 + countx(top->right, x);
+		return 0 + countx(top->left, x) + countx(top->right, x);
 	}
 }
 
@@ -380,6 +382,7 @@ void merge(T* arr, int left, int mid, int right) {
 		j++;
 		k++;
 	}
+	delete[] Left; delete[] Right;
 }
 
 template<class T>
@@ -396,6 +399,34 @@ void merge_sort(T* arr, int n) {
 	}
 }
 
-int main() {
+//int main() {
+//	ifstream in("in.txt");
+//	elem* top = createList(in);
+//	cout << countx(top, 1) << '\n';
+//	printList(top);
+//	top = removex(top, 1);
+//	addyafterx(top, 2, 3);
+//	elem* tc = copyList(top);
+//	printList(tc);
+//	printList(top);
+//	cout << isEqual(top, tc) << ' ' << maxList(top) << '\n'; reverseprint(top);
+//	deleteList(top);
+//}
 
+int main() {
+	ifstream in("in.txt");
+	int* arr = new int[8];
+	for (int i = 0; i < 8; i++) in >> arr[i];
+	cout << countMax(arr, 8, arr[0], 0);
+	in.close();
 }
+
+//int main() {
+//	int n = 8;
+//	int* arr = new int[n];
+//	for (int i = 0; i < n; i++) cin >> arr[i];
+//	node* root = new node{
+//		new node{new node{new node{nullptr, nullptr, arr[7]}, nullptr, arr[3]}, new node{nullptr, nullptr, arr[4]}, arr[1]},	new node{new node{nullptr, nullptr, arr[5]},new node{nullptr, nullptr, arr[6]}, arr[2]} , arr[0]
+//	};
+//	cout << countx(root, 2) << '\n' << sumTree(root);
+//}
